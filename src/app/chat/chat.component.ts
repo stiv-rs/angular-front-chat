@@ -32,9 +32,16 @@ export class ChatComponent implements OnInit{
       this.client.subscribe('/chat/mensaje', e => {
         let mensaje: Mensaje = JSON.parse(e.body) as Mensaje;
         mensaje.fecha = new Date(mensaje.fecha);
+
+        if (!this.mensaje.color && mensaje.tipo == 'NUEVO_USUARIO' && this.mensaje.username == mensaje.username) {
+          this.mensaje.color = mensaje.color;
+        }
+
         this.mensajes.push(mensaje);
         console.log(mensaje)
+
       });
+
       this.mensaje.tipo = 'NUEVO_USUARIO';
       this.client.publish({destination:'/app/mensaje', body: JSON.stringify(this.mensaje)});
 
